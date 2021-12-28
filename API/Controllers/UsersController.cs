@@ -2,11 +2,13 @@ using Microsoft.AspNetCore.Mvc;
 using API.Data;
 using API.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Cors;
 
 namespace API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [EnableCors("Policy1")]
     public class UsersController : ControllerBase
     {
         private readonly DataContext _context;
@@ -16,6 +18,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        
         public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers()
         {
             return await _context.Users.ToListAsync();
