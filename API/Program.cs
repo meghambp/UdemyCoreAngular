@@ -2,6 +2,7 @@ using System.Text;
 using API.Data;
 using API.Extensions;
 using API.Interfaces;
+using API.Middleware;
 using API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +20,8 @@ builder.Services.AddCors(
             options.AddPolicy("Policy1",
                 builder =>
                 {
-                    builder.WithOrigins("http://localhost:4200/")
+                    //builder.WithOrigins("http://localhost:4200/")
+                    builder.AllowAnyOrigin()
                     .AllowAnyHeader()
                     .AllowAnyOrigin();
                 });
@@ -37,9 +39,9 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1"));
-    app.UseDeveloperExceptionPage();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1"));    
 }
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseCors();
