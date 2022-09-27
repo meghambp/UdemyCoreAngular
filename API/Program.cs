@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +35,22 @@ builder.Services.AddSwaggerGen(c =>
 });
 builder.Services.AddApplicationServices(builder.Configuration);
 var app = builder.Build();
+
+//var host = builder.Build();
+using var scope = app.Services.CreateScope();
+var services = scope.ServiceProvider;
+try
+{
+    var context = services.GetRequiredService<DataContext>();
+    await context.Database.MigrateAsync();
+    await Seed.SeedUsers(context);
+}
+catch(Exception ex)
+{
+    var logger = services.GetRequiredService<ILogger<Program>>();
+    logger.LogError(ex, "An error occurred during migration");
+}
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -65,5 +82,5 @@ app.UseAuthorization();
 
 app.MapControllers();
 //app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
-app.Run();
+await app.RunAsync();
 

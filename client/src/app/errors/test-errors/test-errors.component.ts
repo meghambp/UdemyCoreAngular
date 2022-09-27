@@ -9,10 +9,13 @@ import { Component, OnInit } from '@angular/core';
 export class TestErrorsComponent implements OnInit {
   baseUrl = 'https://localhost:7019/';
   validationErrors: string[] = [];
+  //header = new HttpHeaders({'Access-Control-Allow-Origin':'*'});
+  //requestOptions = {  headers: this.header};                                                                                                                                                                            
+
 
   constructor(private http: HttpClient) { }
 
-  ngOnInit(): void {
+  ngOnInit(): void {   
   }
 
   get404Error() {
